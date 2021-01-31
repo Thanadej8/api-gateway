@@ -2,9 +2,9 @@ package main
 
 //go:generate go run github.com/99designs/gqlgen
 
-import (
-	"github.com/thanadej8/api-gateway/graph/resolver"
+import "github.com/thanadej8/api-gateway/graph/resolve"
 
+import (
 	"github.com/gin-gonic/gin"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
