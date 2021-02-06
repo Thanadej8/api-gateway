@@ -7,17 +7,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/thanadej8/api-gateway/graph/generated"
-	"github.com/thanadej8/api-gateway/graph/model"
+	"github.com/Thanadej8/api-gateway/graph/generated"
+	"github.com/Thanadej8/api-gateway/graph/model"
 )
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (model.Todo, error) {
-	fmt.Printf("test")
 	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *queryResolver) Todos(ctx context.Context) ([]model.Todo, error) {
-	fmt.Printf("test")
 	panic(fmt.Errorf("not implemented"))
 }
 
