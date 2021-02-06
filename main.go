@@ -3,7 +3,7 @@ package main
 //go:generate go run github.com/99designs/gqlgen
 
 import (
-	"github.com/Thanadej8/api-gateway/graph/resolver"
+	"api-gateway/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -13,7 +13,7 @@ import (
 func graphqlHandler() gin.HandlerFunc {
 	// NewExecutableSchema and Config are in the generated.go file
 	// Resolver is in the resolver.go file
-	h := handler.NewDefaultServer(NewExecutableSchema(Config{Resolvers: &resolver.Resolver{}}))
+	h := handler.NewDefaultServer(NewExecutableSchema(Config{Resolvers: &graph.Resolver{}}))
 
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)
