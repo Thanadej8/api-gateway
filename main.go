@@ -3,7 +3,7 @@ package main
 //go:generate go run github.com/99designs/gqlgen
 
 import (
-	"api-gateway/graph"
+	"github.com/Thanadej8/api-gateway/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"

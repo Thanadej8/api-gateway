@@ -1,4 +1,4 @@
-module api-gateway
+module github.com/Thanadej8/api-gateway
 
 go 1.15
 
