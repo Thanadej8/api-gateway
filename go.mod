@@ -1,6 +1,6 @@
 module github.com/Thanadej8/api-gateway
 
-require github.com/Thanadej8/api-gateway/graph v0.0.0
+require github.com/Thanadej8/api-gateway/graph v0.0.1
 replace github.com/Thanadej8/api-gateway/graph => ./graph
 
 go 1.15
