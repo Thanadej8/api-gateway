@@ -20,7 +20,14 @@ func (r *queryResolver) Todos(ctx context.Context) ([]model.Todo, error) {
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	var user = new(model.User)
+	user.ID = "1"
+	user.Name = "Thanadej Phadtong"
+
+	usersV2 := []*model.User{user, user, user}
+	// panic(fmt.Errorf("not implemented"))
+
+	return usersV2, nil;
 }
 
 func (r *queryResolver) TestExtends(ctx context.Context) (*model.Test, error) {
@@ -28,7 +35,7 @@ func (r *queryResolver) TestExtends(ctx context.Context) (*model.Test, error) {
 }
 
 func (r *userResolver) Name(ctx context.Context, obj *model.User) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	return obj.Name, nil;
 }
 
 // Mutation returns generated.MutationResolver implementation.
