@@ -1,0 +1,54 @@
+{
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "termsOfService": "there are no TOS at this moment, use at your own risk we take no responsibility",
+    "contact": {
+      "name": "Thanadej Phadtong",
+      "email": "authanadej@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    },
+    "version": "0.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/",
+  "paths": {
+    "/deals/{id}": {
+      "get": {
+        "tags": [
+          "wognnai-deal"
+        ],
+        "summary": "Gets deal by id.",
+        "operationId": "getDealByID",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/dealResponse"
+          },
+          "default": {
+            "$ref": "#/responses/genericError"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Deal": {
+      "type": "object",
+      "x-go-package": "github.com/Thanadej8/api-gateway/moduels/deals/resources"
+    }
+  },
+  "responses": {
+    "dealResponse": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/Deal"
+      }
+    }
+  }
+}

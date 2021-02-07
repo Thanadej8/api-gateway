@@ -1,14 +1,26 @@
+// Terms Of Service:
+//
+// there are no TOS at this moment, use at your own risk we take no responsibility
+//
+//     Schemes: http, https
+//     Host: localhost
+//     BasePath: /
+//     Version: 0.0.0
+//     License: MIT http://opensource.org/licenses/MIT
+//     Contact: Thanadej Phadtong<authanadej@gmail.com>
+// swagger:meta
 package main
 
 //go:generate go run github.com/99designs/gqlgen
 
 import (
-	"github.com/Thanadej8/api-gateway/graph"
-	"github.com/Thanadej8/api-gateway/graph/generated"
+	"github.com/gin-gonic/gin"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/gin-gonic/gin"
+
+	"github.com/Thanadej8/api-gateway/graph"
+	"github.com/Thanadej8/api-gateway/graph/generated"
 )
 
 func graphqlHandler() gin.HandlerFunc {
