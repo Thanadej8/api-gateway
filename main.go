@@ -21,6 +21,7 @@ import (
 
 	"github.com/Thanadej8/api-gateway/graph"
 	"github.com/Thanadej8/api-gateway/graph/generated"
+	"github.com/Thanadej8/api-gateway/modules/deals/resources"
 )
 
 func graphqlHandler() gin.HandlerFunc {
@@ -50,5 +51,6 @@ func main() {
 	})
 	r.POST("/query", graphqlHandler())
 	r.GET("/", playgroundHandler())
+	r.GET("/deals/:id", resources.GetDealByID)
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }

@@ -10,8 +10,11 @@ type Deal struct {
 
 // swagger:parameters getDealByID
 type DealByIDRequest struct {
+	// The ID of the deal
+	//
 	// in: path
-	id int
+	// required: true
+	ID int
 }
 
 // swagger:response dealResponse
@@ -20,7 +23,7 @@ type DealByIDResponse struct {
 	deal Deal
 }
 
-// swagger:route GET /deals/{id} wognnai-deal getDealByID
+// swagger:route GET /deals/{id} deal-section getDealByID
 //
 // Gets deal by id.
 //

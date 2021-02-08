@@ -22,10 +22,20 @@
     "/deals/{id}": {
       "get": {
         "tags": [
-          "wognnai-deal"
+          "deal-section"
         ],
         "summary": "Gets deal by id.",
         "operationId": "getDealByID",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "The ID of the deal",
+            "name": "ID",
+            "in": "path",
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
             "$ref": "#/responses/dealResponse"
