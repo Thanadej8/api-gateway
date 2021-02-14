@@ -1,20 +1,34 @@
 package resources
 
-import "github.com/gin-gonic/gin"
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/99designs/gqlgen/graphql/executor"
+
+	"github.com/Thanadej8/api-gateway/graph"
+	"github.com/Thanadej8/api-gateway/graph/generated"
+	"github.com/gin-gonic/gin"
+)
 
 // swagger:model Deal
 type Deal struct {
-	id int
-	name string
+	// the id of deal
+	//
+	ID int `json:"id"`
+	// name of deal
+	//
+	Name string `json:"name"`
 }
 
 // swagger:parameters getDealByID
 type DealByIDRequest struct {
-	// The ID of the deal
-	//
+
 	// in: path
 	// required: true
-	ID int
+	ID int `json:"id"`
 }
 
 // swagger:response dealResponse
@@ -23,16 +37,41 @@ type DealByIDResponse struct {
 	deal Deal
 }
 
-// swagger:route GET /deals/{id} deal-section getDealByID
+// swagger:route GET /deals/{id} deal getDealByID
 //
 // Gets deal by id.
 //
 // Responses:
-//    default: genericError
 //        200: dealResponse
-func GetDealByID(context *gin.Context) {
+func GetDealByID(ginContext *gin.Context) {
+	fmt.Println("1")
+	context, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
 
-	context.JSON(200, gin.H{
-		"message": "pong",
-	})
+	context = graphql.StartOperationTrace(context)
+
+	graphQLParam := new(graphql.RawParams)
+	fmt.Println("2")
+	graphQLParam.Query = `query {
+		users {
+		  id
+		  name
+		}
+	  }`
+	fmt.Println("graphQLParam.Query: " + graphQLParam.Query)
+	executorGraphql := executor.New(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	fmt.Println("3")
+	response, err :=  executorGraphql.CreateOperationContext(context, graphQLParam)
+	fmt.Println("4")
+	fmt.Println(`error:`)
+	fmt.Println(err)
+	fmt.Println("response: ")
+	fmt.Println(response)
+	if err != nil {
+		
+	}
+
+	responses, ctx := executorGraphql.DispatchOperation(context, response)
+
+	ginContext.JSON(200, responses(ctx).Data,)
 }

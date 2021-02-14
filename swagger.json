@@ -5,6 +5,8 @@
   ],
   "swagger": "2.0",
   "info": {
+    "description": "the purpose of this application is learning",
+    "title": "api-gateway service.",
     "termsOfService": "there are no TOS at this moment, use at your own risk we take no responsibility",
     "contact": {
       "name": "Thanadej Phadtong",
@@ -16,13 +18,13 @@
     },
     "version": "0.0.0"
   },
-  "host": "localhost",
+  "host": "localhost:8080",
   "basePath": "/",
   "paths": {
     "/deals/{id}": {
       "get": {
         "tags": [
-          "deal-section"
+          "deal"
         ],
         "summary": "Gets deal by id.",
         "operationId": "getDealByID",
@@ -30,8 +32,8 @@
           {
             "type": "integer",
             "format": "int64",
-            "description": "The ID of the deal",
-            "name": "ID",
+            "x-go-name": "ID",
+            "name": "id",
             "in": "path",
             "required": true
           }
@@ -39,9 +41,6 @@
         "responses": {
           "200": {
             "$ref": "#/responses/dealResponse"
-          },
-          "default": {
-            "$ref": "#/responses/genericError"
           }
         }
       }
@@ -50,7 +49,20 @@
   "definitions": {
     "Deal": {
       "type": "object",
-      "x-go-package": "github.com/Thanadej8/api-gateway/moduels/deals/resources"
+      "properties": {
+        "id": {
+          "description": "the id of deal",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "name": {
+          "description": "name of deal",
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-package": "github.com/Thanadej8/api-gateway/modules/deals/resources"
     }
   },
   "responses": {

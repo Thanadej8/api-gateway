@@ -1,9 +1,14 @@
+// Package classification api-gateway service.
+//
+// the purpose of this application is learning
+//
 // Terms Of Service:
 //
 // there are no TOS at this moment, use at your own risk we take no responsibility
 //
 //     Schemes: http, https
-//     Host: localhost
+//     Title: api-gateway
+//     Host: localhost:8080
 //     BasePath: /
 //     Version: 0.0.0
 //     License: MIT http://opensource.org/licenses/MIT
@@ -11,13 +16,12 @@
 // swagger:meta
 package main
 
-//go:generate go run github.com/99designs/gqlgen
-
 import (
-	"github.com/gin-gonic/gin"
+	"fmt"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/gin-gonic/gin"
 
 	"github.com/Thanadej8/api-gateway/graph"
 	"github.com/Thanadej8/api-gateway/graph/generated"
@@ -37,6 +41,9 @@ func graphqlHandler() gin.HandlerFunc {
 func playgroundHandler() gin.HandlerFunc {
 	h := playground.Handler("GraphQL", "/query")
 
+	
+
+	fmt.Printf("test")
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)
 	}
@@ -49,6 +56,7 @@ func main() {
 			"message": "pong",
 		})
 	})
+	
 	r.POST("/query", graphqlHandler())
 	r.GET("/", playgroundHandler())
 	r.GET("/deals/:id", resources.GetDealByID)
