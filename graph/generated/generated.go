@@ -56,11 +56,13 @@ type ComplexityRoot struct {
 	}
 
 	Test struct {
-		Done func(childComplexity int) int
-		ID   func(childComplexity int) int
-		Ref  func(childComplexity int) int
-		Text func(childComplexity int) int
-		User func(childComplexity int) int
+		Done  func(childComplexity int) int
+		ID    func(childComplexity int) int
+		Index func(childComplexity int) int
+		Price func(childComplexity int) int
+		Ref   func(childComplexity int) int
+		Text  func(childComplexity int) int
+		User  func(childComplexity int) int
 	}
 
 	User struct {
@@ -78,6 +80,7 @@ type QueryResolver interface {
 	TestExtends(ctx context.Context) (*model.Test, error)
 }
 type UserResolver interface {
+	ID(ctx context.Context, obj *model.User) (string, error)
 	Name(ctx context.Context, obj *model.User) (string, error)
 }
 
@@ -142,6 +145,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Test.ID(childComplexity), true
+
+	case "Test.index":
+		if e.complexity.Test.Index == nil {
+			break
+		}
+
+		return e.complexity.Test.Index(childComplexity), true
+
+	case "Test.price":
+		if e.complexity.Test.Price == nil {
+			break
+		}
+
+		return e.complexity.Test.Price(childComplexity), true
 
 	case "Test.ref":
 		if e.complexity.Test.Ref == nil {
@@ -260,6 +277,8 @@ type Test implements Todo {
   done: Boolean!
   user: User!
   ref: String!
+  index: Int
+  price: Float
 }
 
 type Query {
@@ -741,6 +760,70 @@ func (ec *executionContext) _Test_ref(ctx context.Context, field graphql.Collect
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Test_index(ctx context.Context, field graphql.CollectedField, obj *model.Test) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Test",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Index, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Test_price(ctx context.Context, field graphql.CollectedField, obj *model.Test) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Test",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Price, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*float64)
+	fc.Result = res
+	return ec.marshalOFloat2ᚖfloat64(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _User_id(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -752,14 +835,14 @@ func (ec *executionContext) _User_id(ctx context.Context, field graphql.Collecte
 		Object:     "User",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return ec.resolvers.User().ID(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2086,6 +2169,10 @@ func (ec *executionContext) _Test(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "index":
+			out.Values[i] = ec._Test_index(ctx, field, obj)
+		case "price":
+			out.Values[i] = ec._Test_price(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2109,10 +2196,19 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("User")
 		case "id":
-			out.Values[i] = ec._User_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_id(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "name":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -2778,6 +2874,36 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return graphql.MarshalBoolean(*v)
+}
+
+func (ec *executionContext) unmarshalOFloat2ᚖfloat64(ctx context.Context, v interface{}) (*float64, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalFloat(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOFloat2ᚖfloat64(ctx context.Context, sel ast.SelectionSet, v *float64) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalFloat(*v)
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalInt(*v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

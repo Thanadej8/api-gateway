@@ -14,14 +14,34 @@
 //     License: MIT http://opensource.org/licenses/MIT
 //     Contact: Thanadej Phadtong<authanadej@gmail.com>
 // swagger:meta
+
+// @title Swagger Example API
+// @version 1.0
+// @description This is a sample server Petstore server.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host petstore.swagger.io
+// @BasePath /v2
 package main
 
 import (
 	"fmt"
+	"net/http"
+	"strings"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-gonic/gin"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/Thanadej8/api-gateway/graph"
 	"github.com/Thanadej8/api-gateway/graph/generated"
@@ -49,6 +69,27 @@ func playgroundHandler() gin.HandlerFunc {
 	}
 }
 
+
+func setupGlobalMiddleware(handler http.Handler) http.Handler {
+    return uiMiddleware(handler)
+}
+
+func uiMiddleware(handler http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // Shortcut helpers for swagger-ui
+        if r.URL.Path == "/swagger-ui" || r.URL.Path == "/api/help" {
+            http.Redirect(w, r, "/swagger-ui/", http.StatusFound)
+            return
+        }
+        // Serving ./swagger-ui/
+        if strings.Index(r.URL.Path, "/swagger-ui/") == 0 {
+            http.StripPrefix("/swagger-ui/", http.FileServer(http.Dir("swagger-ui"))).ServeHTTP(w, r)
+            return
+        }
+        handler.ServeHTTP(w, r)
+    })
+}
+
 func main() {
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
@@ -56,7 +97,12 @@ func main() {
 			"message": "pong",
 		})
 	})
-	
+
+	url := ginSwagger.URL("/swagger.json") // The url pointing to API definition
+	fmt.Println("url: ")
+	fmt.Println(url)
+	r.GET("/swagger", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	r.POST("/query", graphqlHandler())
 	r.GET("/", playgroundHandler())
 	r.GET("/deals/:id", resources.GetDealByID)

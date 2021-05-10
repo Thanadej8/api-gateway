@@ -16,6 +16,8 @@ type Test implements Todo {
   done: Boolean!
   user: User!
   ref: String!
+  index: Int
+  price: Float
 }
 
 type Query {

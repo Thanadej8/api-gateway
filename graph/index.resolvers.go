@@ -34,6 +34,10 @@ func (r *queryResolver) TestExtends(ctx context.Context) (*model.Test, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *userResolver) ID(ctx context.Context, obj *model.User) (string, error) {
+	return obj.ID, nil
+}
+
 func (r *userResolver) Name(ctx context.Context, obj *model.User) (string, error) {
 	return obj.Name, nil
 }

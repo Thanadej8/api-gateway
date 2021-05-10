@@ -1,0 +1,71 @@
+{
+  "schemes": ["http", "https"],
+  "swagger": "2.0",
+  "info": {
+    "description": "the purpose of this application is learning",
+    "title": "api-gateway service.",
+    "termsOfService": "there are no TOS at this moment, use at your own risk we take no responsibility",
+    "contact": {
+      "name": "Thanadej Phadtong",
+      "email": "authanadej@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    },
+    "version": "0.0.0"
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "paths": {
+    "/deals/{id}": {
+      "get": {
+        "tags": ["deal"],
+        "summary": "Gets deal by id.",
+        "operationId": "getDealByID",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/dealResponse"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Deal": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "the id of deal",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "name": {
+          "description": "name of deal",
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-package": "github.com/Thanadej8/api-gateway/modules/deals/resources"
+    }
+  },
+  "responses": {
+    "dealResponse": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/Deal"
+      }
+    }
+  }
+}

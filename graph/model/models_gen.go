@@ -12,11 +12,13 @@ type NewTodo struct {
 }
 
 type Test struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
-	Ref  string `json:"ref"`
+	ID    string   `json:"id"`
+	Text  string   `json:"text"`
+	Done  bool     `json:"done"`
+	User  *User    `json:"user"`
+	Ref   string   `json:"ref"`
+	Index *int     `json:"index"`
+	Price *float64 `json:"price"`
 }
 
 func (Test) IsTodo() {}
